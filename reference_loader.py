@@ -13,10 +13,6 @@ def get_default_reference() -> Dict[str, Any]:
 			"Down": {"Knee": [70, 100], "Hip": [150, 180]},
 			"Up": {"Knee": [160, 180], "Hip": [165, 185]},
 		},
-		"Push-up": {
-			"Down": {"Elbow": [70, 100], "Shoulder": [60, 100]},
-			"Up": {"Elbow": [160, 185]},
-		},
 		"Plank": {
 			"Hold": {"Back": [170, 185], "Hip": [160, 185]},
 		},

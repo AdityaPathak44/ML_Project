@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Powerful Features - Fitness Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #1a2332 0%, #2d3748 30%, #1a202c 70%, #0f1419 100%);
+            min-height: 100vh;
+            color: white;
+            padding: 3rem 1.5rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .header h1 {
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: white;
+        }
+
+        .header p {
+            font-size: clamp(1rem, 2.5vw, 1.2rem);
+            color: rgba(255, 255, 255, 0.7);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* Features Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background: rgba(45, 55, 72, 0.5);
+            border: 1px solid rgba(74, 85, 104, 0.4);
+            border-radius: 16px;
+            padding: 2rem;
+            backdrop-filter: blur(15px);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(74, 85, 104, 0.6);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            background: rgba(45, 55, 72, 0.7);
+        }
+
+        .feature-card:hover .feature-icon {
+            transform: scale(1.1);
+        }
+
+        /* Feature Icon */
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .feature-icon.blue {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+        }
+
+        .feature-icon.orange {
+            background: linear-gradient(135deg, #f97316, #ea580c);
+            color: white;
+        }
+
+        .feature-icon.cyan {
+            background: linear-gradient(135deg, #06b6d4, #0891b2);
+            color: white;
+        }
+
+        .feature-icon.yellow {
+            background: linear-gradient(135deg, #eab308, #ca8a04);
+            color: white;
+        }
+
+        /* Feature Content */
+        .feature-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: white;
+        }
+
+        .feature-description {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.6;
+        }
+
+        /* Specific icon styles */
+        .icon-chart::before {
+            content: '📊';
+        }
+
+        .icon-calendar::before {
+            content: '📅';
+        }
+
+        .icon-mobile::before {
+            content: '📱';
+        }
+
+        .icon-trophy::before {
+            content: '🏆';
+        }
+
+        .icon-users::before {
+            content: '👥';
+        }
+
+        .icon-lightning::before {
+            content: '⚡';
+        }
+
+        /* Hover animations */
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-3px);
+            }
+        }
+
+        .feature-card:hover {
+            animation: none;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 1024px) {
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 2rem 1rem;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .feature-card {
+                padding: 1.5rem;
+            }
+
+            .header {
+                margin-bottom: 3rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 1.5rem 0.75rem;
+            }
+
+            .feature-card {
+                padding: 1.25rem;
+            }
+
+            .feature-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1.25rem;
+            }
+
+            .feature-title {
+                font-size: 1.25rem;
+            }
+
+            .feature-description {
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Loading Animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .feature-card {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .feature-card:nth-child(1) { animation-delay: 0.1s; }
+        .feature-card:nth-child(2) { animation-delay: 0.2s; }
+        .feature-card:nth-child(3) { animation-delay: 0.3s; }
+        .feature-card:nth-child(4) { animation-delay: 0.4s; }
+        .feature-card:nth-child(5) { animation-delay: 0.5s; }
+        .feature-card:nth-child(6) { animation-delay: 0.6s; }
+
+        /* Subtle background animation */
+        @keyframes backgroundShift {
+            0%, 100% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+
+        body {
+            background-size: 400% 400%;
+            animation: backgroundShift 20s ease infinite;
+        }
+
+        /* Interactive glow effect */
+        .feature-card::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            border-radius: 18px;
+            opacity: 0;
+            z-index: -1;
+            transition: opacity 0.3s ease;
+        }
+
+        .feature-card:hover::after {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>Powerful Features</h1>
+            <p>Everything you need to transform your fitness journey and achieve your goals.</p>
+        </header>
+
+        <div class="features-grid">
+            <!-- Progress Tracking -->
+            <div class="feature-card">
+                <div class="feature-icon blue">
+                    <span class="icon-chart"></span>
+                </div>
+                <h2 class="feature-title">Progress Tracking</h2>
+                <p class="feature-description">Monitor your fitness journey with detailed analytics and visual progress charts.</p>
+            </div>
+
+            <!-- Smart Scheduling -->
+            <div class="feature-card">
+                <div class="feature-icon orange">
+                    <span class="icon-calendar"></span>
+                </div>
+                <h2 class="feature-title">Smart Scheduling</h2>
+                <p class="feature-description">Plan your workouts with our intelligent scheduling system that adapts to your lifestyle.</p>
+            </div>
+
+            <!-- Mobile Ready -->
+            <div class="feature-card">
+                <div class="feature-icon cyan">
+                    <span class="icon-mobile"></span>
+                </div>
+                <h2 class="feature-title">Mobile Ready</h2>
+                <p class="feature-description">Access your workouts anywhere with our responsive mobile-optimized platform.</p>
+            </div>
+
+            <!-- Achievement System -->
+            <div class="feature-card">
+                <div class="feature-icon orange">
+                    <span class="icon-trophy"></span>
+                </div>
+                <h2 class="feature-title">Achievement System</h2>
+                <p class="feature-description">Unlock badges and achievements as you reach new fitness milestones.</p>
+            </div>
+
+            <!-- Community Support -->
+            <div class="feature-card">
+                <div class="feature-icon blue">
+                    <span class="icon-users"></span>
+                </div>
+                <h2 class="feature-title">Community Support</h2>
+                <p class="feature-description">Connect with like-minded fitness enthusiasts and share your journey.</p>
+            </div>
+
+            <!-- AI-Powered Workouts -->
+            <div class="feature-card">
+                <div class="feature-icon yellow">
+                    <span class="icon-lightning"></span>
+                </div>
+                <h2 class="feature-title">AI-Powered Workouts</h2>
+                <p class="feature-description">Get personalized workout recommendations based on your goals and progress.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add click handlers to feature cards
+            const featureCards = document.querySelectorAll('.feature-card');
+            
+            featureCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    const title = this.querySelector('.feature-title').textContent;
+                    
+                    // Add click animation
+                    this.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        this.style.transform = 'translateY(-8px) scale(1)';
+                    }, 150);
+
+                    // Log the clicked feature
+                    console.log(`Feature clicked: ${title}`);
+                });
+
+                // Add mouse enter/leave effects
+                card.addEventListener('mouseenter', function() {
+                    // Add subtle rotation
+                    this.style.transform = 'translateY(-8px) rotateX(5deg)';
+                    
+                    // Animate icon
+                    const icon = this.querySelector('.feature-icon');
+                    icon.style.animation = 'float 2s ease-in-out infinite';
+                });
+
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) rotateX(0deg)';
+                    
+                    // Stop icon animation
+                    const icon = this.querySelector('.feature-icon');
+                    icon.style.animation = 'none';
+                });
+
+                // Add touch feedback for mobile
+                card.addEventListener('touchstart', function() {
+                    this.style.transform = 'scale(0.95)';
+                });
+
+                card.addEventListener('touchend', function() {
+                    this.style.transform = 'scale(1)';
+                });
+            });
+
+            // Intersection Observer for scroll animations
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                        
+                        // Add staggered animation
+                        const cards = document.querySelectorAll('.feature-card');
+                        cards.forEach((card, index) => {
+                            setTimeout(() => {
+                                card.style.opacity = '1';
+                                card.style.transform = 'translateY(0)';
+                            }, index * 100);
+                        });
+                    }
+                });
+            }, observerOptions);
+
+            // Observe feature cards
+            featureCards.forEach(card => {
+                observer.observe(card);
+            });
+
+            // Add keyboard navigation
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Tab') {
+                    // Enhance focus styles
+                    const focusedCard = document.activeElement;
+                    if (focusedCard.classList.contains('feature-card')) {
+                        focusedCard.style.outline = '2px solid #3b82f6';
+                        focusedCard.style.outlineOffset = '4px';
+                    }
+                }
+            });
+
+            // Remove focus styles on mouse interaction
+            featureCards.forEach(card => {
+                card.addEventListener('mousedown', function() {
+                    this.style.outline = 'none';
+                });
+            });
+
+            // Add subtle parallax effect on scroll
+            window.addEventListener('scroll', function() {
+                const scrolled = window.pageYOffset;
+                const cards = document.querySelectorAll('.feature-card');
+                
+                cards.forEach((card, index) => {
+                    const speed = 0.1 + (index * 0.02);
+                    card.style.transform = `translateY(${scrolled * speed}px)`;
+                });
+            });
+
+            // Performance optimization: throttle scroll event
+            let ticking = false;
+            function updateParallax() {
+                const scrolled = window.pageYOffset;
+                const cards = document.querySelectorAll('.feature-card');
+                
+                cards.forEach((card, index) => {
+                    const speed = 0.05 + (index * 0.01);
+                    const yPos = -(scrolled * speed);
+                    card.style.transform = `translateY(${yPos}px)`;
+                });
+                
+                ticking = false;
+            }
+
+            window.addEventListener('scroll', function() {
+                if (!ticking) {
+                    requestAnimationFrame(updateParallax);
+                    ticking = true;
+                }
+            });
+        });
+
+        // Add CSS for focus styles
+        const style = document.createElement('style');
+        style.textContent = `
+            .feature-card:focus {
+                outline: 2px solid #3b82f6;
+                outline-offset: 4px;
+            }
+            
+            .feature-card {
+                cursor: pointer;
+                tabindex: 0;
+            }
+
+            @media (prefers-reduced-motion: reduce) {
+                .feature-card,
+                .feature-icon,
+                body {
+                    animation: none !important;
+                    transition: none !important;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

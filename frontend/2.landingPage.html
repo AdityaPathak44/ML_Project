@@ -1,0 +1,512 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Posefit AI - Transform Your Fitness Journey</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #6441a5 100%);
+            min-height: 100vh;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        /* Animated background elements */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .bg-animation::before {
+            content: '';
+            position: absolute;
+            top: 20%;
+            left: 10%;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .bg-animation::after {
+            content: '';
+            position: absolute;
+            bottom: 20%;
+            right: 10%;
+            width: 150px;
+            height: 150px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 50%;
+            animation: float 8s ease-in-out infinite reverse;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-20px) scale(1.1); }
+        }
+
+        /* Header */
+        .header {
+            position: relative;
+            z-index: 10;
+            padding: 1rem 2rem;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+        }
+
+        .logo::before {
+            content: '💪';
+            margin-right: 0.5rem;
+            font-size: 1.8rem;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+        }
+
+        .nav-links a:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .user-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .user-icon:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        /* Main Content */
+        .main-content {
+            position: relative;
+            z-index: 10;
+            padding: 4rem 2rem;
+            text-align: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .hero {
+            margin-bottom: 4rem;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 800;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+            background: linear-gradient(45deg, #ffffff, #a8d8ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: slideInUp 1s ease-out;
+        }
+
+        .hero .highlight {
+            background: linear-gradient(45deg, #4facfe, #00f2fe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.8);
+            max-width: 600px;
+            margin: 0 auto 2rem;
+            line-height: 1.6;
+            animation: slideInUp 1s ease-out 0.2s both;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: slideInUp 1s ease-out 0.4s both;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #4facfe, #00f2fe);
+            color: white;
+            box-shadow: 0 8px 25px rgba(79, 172, 254, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(79, 172, 254, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        /* Statistics Section */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 4rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 2rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            animation: fadeInScale 1s ease-out;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(45deg, #4facfe, #00f2fe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 500;
+        }
+
+        /* Animations */
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Close button */
+        .close-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-animation"></div>
+    
+    <button class="close-btn" onclick="this.style.display='none'">×</button>
+    
+    <header class="header">
+        <nav class="nav">
+            <a href="#" class="logo">PoseFit AI</a>
+            <ul class="nav-links">
+                <li><a href="/FRONTEND/4.dashboard.html">Dashboard</a></li>
+                <li><a href="/FRONTEND/3.workoutPage.html">Workouts</a></li>
+                <li><a href="/FRONTEND/5.features.html">Features</a></li>
+                <li><a href="#">Nutrition</a></li>
+            </ul>
+            <div class="user-icon">👤</div>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <section class="hero">
+            <h1>Transform Your <span class="highlight">Fitness Journey</span></h1>
+            <p>Track workouts, monitor progress, and achieve your fitness goals with our comprehensive training platform.</p>
+            <div class="cta-buttons">
+                <a href="#" class="btn btn-primary">Start Your Journey →</a>
+                <a href="#" class="btn btn-secondary">▶ Watch Demo</a>
+            </div>
+        </section>
+
+        <section class="stats">
+            <div class="stat-item">
+                <div class="stat-number">50K+</div>
+                <div class="stat-label">Active Users</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">1M+</div>
+                <div class="stat-label">Workouts Completed</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">500+</div>
+                <div class="stat-label">Exercise Library</div>
+            </div>
+            <!-- <div class="stat-item">
+                <div class="stat-number">Always</div>
+                <div class="stat-label">Support</div>
+            </div> -->
+        </section>
+    </main>
+
+    <script>
+        // Add smooth scrolling and interactive effects
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate statistics on scroll
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.animationPlayState = 'running';
+                        animateNumber(entry.target.querySelector('.stat-number'));
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.stat-item').forEach(stat => {
+                observer.observe(stat);
+            });
+
+            // Animate numbers counting up
+            function animateNumber(element) {
+                const target = element.textContent;
+                const number = parseInt(target.replace(/\D/g, ''));
+                const suffix = target.replace(/[\d,]/g, '');
+                let current = 0;
+                const increment = number / 100;
+                const duration = 2000;
+                const stepTime = duration / 100;
+
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= number) {
+                        current = number;
+                        clearInterval(timer);
+                    }
+                    
+                    let displayNumber = Math.floor(current);
+                    if (displayNumber >= 1000) {
+                        displayNumber = (displayNumber / 1000).toFixed(0) + 'K';
+                    } else if (displayNumber >= 1000000) {
+                        displayNumber = (displayNumber / 1000000).toFixed(0) + 'M';
+                    }
+                    
+                    element.textContent = displayNumber + suffix.replace(/[KM]/g, '');
+                }, stepTime);
+            }
+
+            // Add click effects to buttons
+            document.querySelectorAll('.btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Create ripple effect
+                    const ripple = document.createElement('span');
+                    const rect = this.getBoundingClientRect();
+                    const size = Math.max(rect.width, rect.height);
+                    const x = e.clientX - rect.left - size / 2;
+                    const y = e.clientY - rect.top - size / 2;
+                    
+                    ripple.style.cssText = `
+                        position: absolute;
+                        width: ${size}px;
+                        height: ${size}px;
+                        left: ${x}px;
+                        top: ${y}px;
+                        background: rgba(255, 255, 255, 0.3);
+                        border-radius: 50%;
+                        transform: scale(0);
+                        animation: ripple 0.6s linear;
+                        pointer-events: none;
+                    `;
+                    
+                    this.appendChild(ripple);
+                    
+                    setTimeout(() => {
+                        ripple.remove();
+                    }, 600);
+                });
+            });
+
+            // Add navigation link hover effects
+            document.querySelectorAll('.nav-links a').forEach(link => {
+                link.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-2px) scale(1.05)';
+                });
+                
+                link.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+
+            // Add parallax effect to background
+            window.addEventListener('scroll', function() {
+                const scrolled = window.pageYOffset;
+                const bg = document.querySelector('.bg-animation');
+                bg.style.transform = `translateY(${scrolled * 0.5}px)`;
+            });
+        });
+
+        // Add CSS for ripple animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes ripple {
+                to {
+                    transform: scale(4);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

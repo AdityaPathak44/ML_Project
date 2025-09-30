@@ -9,11 +9,12 @@ JOINT_DEFINITIONS: Dict[str, Tuple[str, str, str]] = {
 	"Elbow": ("SHOULDER", "ELBOW", "WRIST"),
 	"Shoulder": ("ELBOW", "SHOULDER", "HIP"),
 	"Back": ("SHOULDER", "HIP", "KNEE"),
+	"Arm": ("SHOULDER", "ELBOW", "WRIST"),  # For bicep curl motion
 }
 
 # Map human names to Mediapipe PoseLandmark enum names for left/right selection
-LEFT_SUFFIX = "_LEFT"
-RIGHT_SUFFIX = "_RIGHT"
+LEFT_PREFIX = "LEFT_"
+RIGHT_PREFIX = "RIGHT_"
 
 
 class FeedbackEngine:
@@ -31,10 +32,10 @@ class FeedbackEngine:
 		triplet = JOINT_DEFINITIONS.get(joint_name)
 		if triplet is None:
 			return float('nan')
-		suffix = LEFT_SUFFIX if side.upper() == "LEFT" else RIGHT_SUFFIX
-		a_name = f"{triplet[0]}{suffix}"
-		b_name = f"{triplet[1]}{suffix}"
-		c_name = f"{triplet[2]}{suffix}"
+		prefix = LEFT_PREFIX if side.upper() == "LEFT" else RIGHT_PREFIX
+		a_name = f"{prefix}{triplet[0]}"
+		b_name = f"{prefix}{triplet[1]}"
+		c_name = f"{prefix}{triplet[2]}"
 		pa = self._get_point(lms, a_name)
 		pb = self._get_point(lms, b_name)
 		pc = self._get_point(lms, c_name)

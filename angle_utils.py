@@ -4,26 +4,20 @@ import numpy as np
 
 def calculate_angle(point_a: Tuple[float, float], point_b: Tuple[float, float], point_c: Tuple[float, float]) -> float:
 	"""
-	Calculate the angle ABC (at point_b) in degrees between BA and BC using numpy.
-	Returns angle in [0, 180].
+	Calculate the angle ABC (at point_b) in degrees using arctangent method.
+	Returns angle in [0, 180] degrees.
 	"""
-	a = np.array(point_a, dtype=float)
-	b = np.array(point_b, dtype=float)
-	c = np.array(point_c, dtype=float)
+	a = np.array(point_a)  # First point (e.g., shoulder)
+	b = np.array(point_b)  # Mid point (e.g., elbow)
+	c = np.array(point_c)  # End point (e.g., wrist)
 
-	ba = a - b
-	bc = c - b
+	radians = np.arctan2(c[1]-b[1], c[0]-b[0]) - np.arctan2(a[1]-b[1], a[0]-b[0])
+	angle = np.abs(radians*180.0/np.pi)
 
-	norm_ba = np.linalg.norm(ba)
-	norm_bc = np.linalg.norm(bc)
-	if norm_ba == 0 or norm_bc == 0:
-		return float('nan')
+	if angle > 180.0:
+		angle = 360 - angle
 
-	cosine_angle = np.dot(ba, bc) / (norm_ba * norm_bc)
-	cosine_angle = np.clip(cosine_angle, -1.0, 1.0)
-	angle_rad = np.arccos(cosine_angle)
-	angle_deg = np.degrees(angle_rad)
-	return float(angle_deg)
+	return float(angle)
 
 
 def is_angle_in_range(angle: float, low_high: Tuple[float, float]) -> bool:

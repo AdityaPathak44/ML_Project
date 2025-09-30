@@ -1,0 +1,837 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitPro - Login & Register</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #1a2332 0%, #2d3748 30%, #1a202c 70%, #0f1419 100%);
+            min-height: 100vh;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Animated background elements */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .bg-animation::before {
+            content: '';
+            position: absolute;
+            top: 20%;
+            left: 15%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.1), transparent 70%);
+            border-radius: 50%;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .bg-animation::after {
+            content: '';
+            position: absolute;
+            bottom: 20%;
+            right: 15%;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(249, 115, 22, 0.1), transparent 70%);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite reverse;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-30px) scale(1.1); }
+        }
+
+        /* Main Container */
+        .auth-container {
+            background: rgba(45, 55, 72, 0.6);
+            border: 1px solid rgba(74, 85, 104, 0.4);
+            border-radius: 24px;
+            padding: 2.5rem;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 420px;
+            position: relative;
+            z-index: 10;
+            animation: slideInUp 0.8s ease-out;
+        }
+
+        .auth-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        }
+
+        /* Logo and Header */
+        .auth-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            color: white;
+        }
+
+        .logo::before {
+            content: '💪';
+            font-size: 2.5rem;
+        }
+
+        .auth-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .auth-subtitle {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.95rem;
+        }
+
+        /* Toggle Buttons */
+        .auth-toggle {
+            display: flex;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .toggle-btn {
+            flex: 1;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 8px;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-btn.active {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        /* Forms */
+        .auth-form {
+            display: none;
+        }
+
+        .auth-form.active {
+            display: block;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .password-group {
+            position: relative;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.6);
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: color 0.3s ease;
+        }
+
+        .password-toggle:hover {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Submit Button */
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #f97316, #ea580c);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(249, 115, 22, 0.4);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .submit-btn.loading {
+            pointer-events: none;
+            opacity: 0.8;
+        }
+
+        .submit-btn .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 0.5rem;
+        }
+
+        .submit-btn.loading .spinner {
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Divider */
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 1.5rem 0;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .divider span {
+            margin: 0 1rem;
+        }
+
+        /* Social Login */
+        .social-login {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .social-btn {
+            flex: 1;
+            padding: 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: rgba(255, 255, 255, 0.8);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-weight: 500;
+        }
+
+        .social-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .social-btn.google:hover {
+            border-color: rgba(219, 68, 55, 0.5);
+        }
+
+        .social-btn.facebook:hover {
+            border-color: rgba(24, 119, 242, 0.5);
+        }
+
+        /* Footer Links */
+        .auth-footer {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+        }
+
+        .auth-footer a {
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .auth-footer a:hover {
+            color: #60a5fa;
+        }
+
+        /* Checkbox */
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .checkbox {
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+            background: transparent;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .checkbox:checked {
+            background: #3b82f6;
+            border-color: #3b82f6;
+        }
+
+        .checkbox:checked::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .checkbox-label {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        /* Animations */
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Error Messages */
+        .error-message {
+            background: rgba(248, 113, 113, 0.1);
+            border: 1px solid rgba(248, 113, 113, 0.3);
+            border-radius: 8px;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            color: #fca5a5;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        /* Success Messages */
+        .success-message {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            border-radius: 8px;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            color: #86efac;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .success-message.show {
+            display: block;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .auth-container {
+                padding: 2rem;
+                margin: 1rem;
+            }
+
+            .social-login {
+                flex-direction: column;
+            }
+
+            .social-btn {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .auth-container {
+                padding: 1.5rem;
+            }
+
+            .auth-title {
+                font-size: 1.5rem;
+            }
+
+            .logo {
+                font-size: 1.5rem;
+            }
+
+            .logo::before {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-animation"></div>
+
+    <div class="auth-container">
+        <div class="auth-header">
+            <div class="logo">PoseFit AI</div>
+            <h1 class="auth-title">Welcome Back</h1>
+            <p class="auth-subtitle">Continue your fitness journey</p>
+        </div>
+
+        <div class="auth-toggle">
+            <button class="toggle-btn active" data-form="login">Login</button>
+            <button class="toggle-btn" data-form="register">Register</button>
+        </div>
+
+        <div class="error-message" id="errorMessage"></div>
+        <div class="success-message" id="successMessage"></div>
+
+        <!-- Login Form -->
+        <form class="auth-form active" id="loginForm">
+            <div class="form-group">
+                <label class="form-label" for="loginEmail">Email Address</label>
+                <input type="email" id="loginEmail" class="form-input" placeholder="Enter your email" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="loginPassword">Password</label>
+                <div class="password-group">
+                    <input type="password" id="loginPassword" class="form-input" placeholder="Enter your password" required>
+                    <button type="button" class="password-toggle" onclick="togglePassword('loginPassword')">👁️</button>
+                </div>
+            </div>
+
+            <div class="checkbox-group">
+                <input type="checkbox" id="rememberMe" class="checkbox">
+                <label for="rememberMe" class="checkbox-label">Remember me</label>
+            </div>
+
+            <button type="submit" class="submit-btn">
+                <span class="spinner"></span>
+                <a href="/FRONTEND/2.landingPage.html" style="text-decoration: none; color: white;">Sign In</a>
+            </button>
+
+            <div class="divider">
+                <span>or continue with</span>
+            </div>
+
+            <div class="social-login">
+                <button type="button" class="social-btn google">
+                    🔍 Google
+                </button>
+                <button type="button" class="social-btn facebook">
+                    📘 Facebook
+                </button>
+            </div>
+
+            <div class="auth-footer">
+                <a href="#" onclick="showForgotPassword()">Forgot your password?</a>
+            </div>
+        </form>
+
+        <!-- Register Form -->
+        <form class="auth-form" id="registerForm">
+            <div class="form-group">
+                <label class="form-label" for="registerName">Full Name</label>
+                <input type="text" id="registerName" class="form-input" placeholder="Enter your full name" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="registerEmail">Email Address</label>
+                <input type="email" id="registerEmail" class="form-input" placeholder="Enter your email" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="registerPassword">Password</label>
+                <div class="password-group">
+                    <input type="password" id="registerPassword" class="form-input" placeholder="Create a password" required>
+                    <button type="button" class="password-toggle" onclick="togglePassword('registerPassword')">👁️</button>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="confirmPassword">Confirm Password</label>
+                <div class="password-group">
+                    <input type="password" id="confirmPassword" class="form-input" placeholder="Confirm your password" required>
+                    <button type="button" class="password-toggle" onclick="togglePassword('confirmPassword')">👁️</button>
+                </div>
+            </div>
+
+            <div class="checkbox-group">
+                <input type="checkbox" id="agreeTerms" class="checkbox" required>
+                <label for="agreeTerms" class="checkbox-label">I agree to the <a href="#" style="color: #3b82f6;">Terms of Service</a> and <a href="#" style="color: #3b82f6;">Privacy Policy</a></label>
+            </div>
+
+            <button type="submit" class="submit-btn">
+                <span class="spinner"></span>
+                Create Account
+            </button>
+
+            <div class="divider">
+                <span>or continue with</span>
+            </div>
+
+            <div class="social-login">
+                <button type="button" class="social-btn google">
+                    🔍 Google
+                </button>
+                <button type="button" class="social-btn facebook">
+                    📘 Facebook
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Toggle between login and register forms
+        const toggleButtons = document.querySelectorAll('.toggle-btn');
+        const authForms = document.querySelectorAll('.auth-form');
+        const authTitle = document.querySelector('.auth-title');
+        const authSubtitle = document.querySelector('.auth-subtitle');
+
+        toggleButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const formType = this.dataset.form;
+                
+                // Update active toggle button
+                toggleButtons.forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Update active form
+                authForms.forEach(form => form.classList.remove('active'));
+                document.getElementById(formType + 'Form').classList.add('active');
+                
+                // Update header text
+                if (formType === 'login') {
+                    authTitle.textContent = 'Welcome Back';
+                    authSubtitle.textContent = 'Continue your fitness journey';
+                } else {
+                    authTitle.textContent = 'Join FitPro';
+                    authSubtitle.textContent = 'Start your fitness transformation today';
+                }
+                
+                // Clear messages
+                hideMessage();
+            });
+        });
+
+        // Password toggle functionality
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const toggle = input.nextElementSibling;
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                toggle.textContent = '🙈';
+            } else {
+                input.type = 'password';
+                toggle.textContent = '👁️';
+            }
+        }
+
+        // Form validation and submission
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            handleLogin();
+        });
+
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            handleRegister();
+        });
+
+        function handleLogin() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const submitBtn = document.querySelector('#loginForm .submit-btn');
+
+            if (!validateEmail(email)) {
+                showMessage('Please enter a valid email address.', 'error');
+                return;
+            }
+
+            if (password.length < 6) {
+                showMessage('Password must be at least 6 characters long.', 'error');
+                return;
+            }
+
+            // Show loading state
+            submitBtn.classList.add('loading');
+            hideMessage();
+
+            // Simulate API call
+            setTimeout(() => {
+                submitBtn.classList.remove('loading');
+                
+                // Accept any valid email and password combination for demo purposes
+                // In a real app, this would validate against your backend API
+                if (validateEmail(email) && password.length >= 6) {
+                    showMessage('Login successful! Redirecting to dashboard...', 'success');
+                    setTimeout(() => {
+                        console.log('Redirecting to dashboard...');
+                        // Store user info for demo
+                        localStorage.setItem('fitpro_user', JSON.stringify({
+                            email: email,
+                            name: email.split('@')[0],
+                            loginTime: new Date().toISOString()
+                        }));
+                        // window.location.href = 'dashboard.html';
+                        alert('Login successful! In a real app, you would be redirected to the dashboard.');
+                    }, 1500);
+                } else {
+                    showMessage('Login failed. Please check your credentials and try again.', 'error');
+                }
+            }, 1500);
+        }
+
+        function handleRegister() {
+            const name = document.getElementById('registerName').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const agreeTerms = document.getElementById('agreeTerms').checked;
+            const submitBtn = document.querySelector('#registerForm .submit-btn');
+
+            // Validation
+            if (name.length < 2) {
+                showMessage('Please enter your full name.', 'error');
+                return;
+            }
+
+            if (!validateEmail(email)) {
+                showMessage('Please enter a valid email address.', 'error');
+                return;
+            }
+
+            if (password.length < 8) {
+                showMessage('Password must be at least 8 characters long.', 'error');
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                showMessage('Passwords do not match.', 'error');
+                return;
+            }
+
+            if (!agreeTerms) {
+                showMessage('Please agree to the Terms of Service and Privacy Policy.', 'error');
+                return;
+            }
+
+            // Show loading state
+            submitBtn.classList.add('loading');
+            hideMessage();
+
+            // Simulate API call
+            setTimeout(() => {
+                submitBtn.classList.remove('loading');
+                showMessage('Account created successfully! Please check your email to verify your account.', 'success');
+                
+                // Reset form after success
+                setTimeout(() => {
+                    document.getElementById('registerForm').reset();
+                    // Switch to login form
+                    document.querySelector('[data-form="login"]').click();
+                }, 2000);
+            }, 2000);
+        }
+
+        // Social login handlers
+        document.querySelectorAll('.social-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const provider = this.classList.contains('google') ? 'Google' : 'Facebook';
+                showMessage(`${provider} authentication coming soon!`, 'error');
+            });
+        });
+
+        // Utility functions
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        function showMessage(message, type) {
+            const errorEl = document.getElementById('errorMessage');
+            const successEl = document.getElementById('successMessage');
+            
+            hideMessage();
+            
+            if (type === 'error') {
+                errorEl.textContent = message;
+                errorEl.classList.add('show');
+            } else {
+                successEl.textContent = message;
+                successEl.classList.add('show');
+            }
+        }
+
+        function hideMessage() {
+            document.getElementById('errorMessage').classList.remove('show');
+            document.getElementById('successMessage').classList.remove('show');
+        }
+
+        function showForgotPassword() {
+            const email = prompt('Please enter your email address:');
+            if (email && validateEmail(email)) {
+                showMessage('Password reset link sent to ' + email, 'success');
+            } else if (email) {
+                showMessage('Please enter a valid email address.', 'error');
+            }
+        }
+
+        // Add input focus effects
+        document.querySelectorAll('.form-input').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentNode.style.transform = 'scale(1.02)';
+            });
+
+            input.addEventListener('blur', function() {
+                this.parentNode.style.transform = 'scale(1)';
+            });
+        });
+
+        // Add ripple effect to buttons
+        document.querySelectorAll('.submit-btn, .social-btn').forEach(button => {
+            button.addEventListener('click', function(e) {
+                const ripple = document.createElement('span');
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+                
+                ripple.style.cssText = `
+                    position: absolute;
+                    width: ${size}px;
+                    height: ${size}px;
+                    left: ${x}px;
+                    top: ${y}px;
+                    background: rgba(255, 255, 255, 0.2);
+                    border-radius: 50%;
+                    transform: scale(0);
+                    animation: ripple 0.6s linear;
+                    pointer-events: none;
+                `;
+                
+                this.style.position = 'relative';
+                this.style.overflow = 'hidden';
+                this.appendChild(ripple);
+                
+                setTimeout(() => ripple.remove(), 600);
+            });
+        });
+
+        // Add CSS for ripple animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes ripple {
+                to {
+                    transform: scale(4);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
