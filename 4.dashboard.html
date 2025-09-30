@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Fitness Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #1a2332 0%, #2d3748 50%, #1a202c 100%);
+            min-height: 100vh;
+            color: white;
+            padding: 1rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 1rem 0;
+        }
+
+        .header h1 {
+            font-size: clamp(2rem, 4vw, 2.5rem);
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+
+        .header p {
+            font-size: clamp(0.9rem, 2vw, 1.1rem);
+            color: rgba(255, 255, 255, 0.7);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: rgba(45, 55, 72, 0.6);
+            border: 1px solid rgba(74, 85, 104, 0.4);
+            border-radius: 12px;
+            padding: 1.5rem;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(74, 85, 104, 0.6);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--accent-color);
+        }
+
+        .stat-card.weekly-goal::before {
+            --accent-color: #3182ce;
+        }
+
+        .stat-card.calories::before {
+            --accent-color: #ed8936;
+        }
+
+        .stat-card.streak::before {
+            --accent-color: #38a169;
+        }
+
+        .stat-card.workouts::before {
+            --accent-color: #d69e2e;
+        }
+
+        .stat-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .stat-icon {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+        }
+
+        .stat-icon.blue { background: #3182ce; }
+        .stat-icon.orange { background: #ed8936; }
+        .stat-icon.green { background: #38a169; }
+        .stat-icon.yellow { background: #d69e2e; }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.25rem;
+            display: flex;
+            align-items: baseline;
+            gap: 0.5rem;
+        }
+
+        .stat-value .fraction {
+            font-size: 2.5rem;
+        }
+
+        .stat-label {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-extra {
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .stat-extra.blue { color: #63b3ed; }
+        .stat-extra.orange { color: #f6ad55; }
+        .stat-extra.yellow { color: #f6e05e; }
+
+        /* Progress Circle */
+        .progress-circle {
+            position: relative;
+            width: 60px;
+            height: 60px;
+            margin-left: auto;
+            margin-top: -20px;
+        }
+
+        .progress-circle svg {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+        }
+
+        .progress-circle .bg-circle {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.1);
+            stroke-width: 6;
+        }
+
+        .progress-circle .progress-circle-fill {
+            fill: none;
+            stroke: #3182ce;
+            stroke-width: 6;
+            stroke-linecap: round;
+            transition: stroke-dasharray 0.3s ease;
+        }
+
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #3182ce;
+        }
+
+        /* Main Content Grid */
+        .main-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+        }
+
+        /* Recent Workouts */
+        .recent-workouts {
+            background: rgba(45, 55, 72, 0.6);
+            border: 1px solid rgba(74, 85, 104, 0.4);
+            border-radius: 12px;
+            padding: 1.5rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .section-icon {
+            width: 20px;
+            height: 20px;
+            background: #3182ce;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+        }
+
+        .workout-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .workout-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(74, 85, 104, 0.3);
+        }
+
+        .workout-item:last-child {
+            border-bottom: none;
+        }
+
+        .workout-info h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .workout-info p {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .workout-stats {
+            text-align: right;
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .workout-duration {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .workout-calories {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.85rem;
+            color: #f6ad55;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            background: rgba(45, 55, 72, 0.6);
+            border: 1px solid rgba(74, 85, 104, 0.4);
+            border-radius: 12px;
+            padding: 1.5rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            width: 100%;
+        }
+
+        .action-btn.primary {
+            background: #3182ce;
+            color: white;
+        }
+
+        .action-btn.primary:hover {
+            background: #2c5282;
+            transform: translateY(-1px);
+        }
+
+        .action-btn.secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .action-btn.secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .action-icon {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 0.5rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.75rem;
+            }
+
+            .stat-card {
+                padding: 1rem;
+            }
+
+            .stat-value {
+                font-size: 2rem;
+            }
+
+            .workout-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .workout-stats {
+                align-self: stretch;
+                flex-direction: row;
+                justify-content: space-between;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .header p {
+                font-size: 0.9rem;
+                padding: 0 0.5rem;
+            }
+        }
+
+        /* Icons using CSS shapes */
+        .icon-clock::before {
+            content: '⏱';
+            font-size: 0.75rem;
+        }
+
+        .icon-fire::before {
+            content: '🔥';
+            font-size: 0.75rem;
+        }
+
+        .icon-lightning::before {
+            content: '⚡';
+            font-size: 0.75rem;
+        }
+
+        .icon-calendar::before {
+            content: '📅';
+            font-size: 0.75rem;
+        }
+
+        .icon-chart::before {
+            content: '📊';
+            font-size: 0.75rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>Your Fitness Dashboard</h1>
+            <p>Track your progress, view upcoming workouts, and stay motivated with real-time insights.</p>
+        </header>
+
+        <div class="stats-grid">
+            <div class="stat-card weekly-goal">
+                <div class="stat-header">
+                    <div class="stat-icon blue"></div>
+                    Weekly Goal
+                </div>
+                <div class="stat-value">
+                    <span class="fraction">4/5</span>
+                </div>
+                <div class="stat-label">Workouts</div>
+                <div class="progress-circle">
+                    <svg>
+                        <circle class="bg-circle" cx="30" cy="30" r="24"></circle>
+                        <circle class="progress-circle-fill" cx="30" cy="30" r="24" 
+                                stroke-dasharray="120.64" stroke-dashoffset="24.13"></circle>
+                    </svg>
+                    <div class="progress-text">80%</div>
+                </div>
+            </div>
+
+            <div class="stat-card calories">
+                <div class="stat-header">
+                    <div class="stat-icon orange"></div>
+                    Calories Burned
+                </div>
+                <div class="stat-value">2,847</div>
+                <div class="stat-label">This week</div>
+                <div class="stat-extra orange">+12% from last week</div>
+            </div>
+
+            <div class="stat-card streak">
+                <div class="stat-header">
+                    <div class="stat-icon green"></div>
+                    Current Streak
+                </div>
+                <div class="stat-value">7</div>
+                <div class="stat-label">Days active</div>
+                <div class="stat-extra blue">Personal best!</div>
+            </div>
+
+            <div class="stat-card workouts">
+                <div class="stat-header">
+                    <div class="stat-icon yellow"></div>
+                    Total Workouts
+                </div>
+                <div class="stat-value">156</div>
+                <div class="stat-label">All time</div>
+                <div class="stat-extra yellow">Keep it up!</div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <section class="recent-workouts">
+                <div class="section-header">
+                    <div class="section-icon">📅</div>
+                    Recent Workouts
+                </div>
+                <div class="workout-list">
+                    <div class="workout-item">
+                        <div class="workout-info">
+                            <h3>Upper Body Strength</h3>
+                            <p>Today</p>
+                        </div>
+                        <div class="workout-stats">
+                            <div class="workout-duration">
+                                <span class="icon-clock"></span>
+                                45 min
+                            </div>
+                            <div class="workout-calories">
+                                <span class="icon-fire"></span>
+                                420 cal
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="workout-item">
+                        <div class="workout-info">
+                            <h3>HIIT Cardio</h3>
+                            <p>Yesterday</p>
+                        </div>
+                        <div class="workout-stats">
+                            <div class="workout-duration">
+                                <span class="icon-clock"></span>
+                                30 min
+                            </div>
+                            <div class="workout-calories">
+                                <span class="icon-fire"></span>
+                                380 cal
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="workout-item">
+                        <div class="workout-info">
+                            <h3>Leg Day</h3>
+                            <p>2 days ago</p>
+                        </div>
+                        <div class="workout-stats">
+                            <div class="workout-duration">
+                                <span class="icon-clock"></span>
+                                50 min
+                            </div>
+                            <div class="workout-calories">
+                                <span class="icon-fire"></span>
+                                465 cal
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <aside class="quick-actions">
+                <div class="section-header">
+                    Quick Actions
+                </div>
+                <div class="action-buttons">
+                    <button class="action-btn primary">
+                        <span class="icon-lightning"></span>
+                        Start Workout
+                    </button>
+                    <button class="action-btn secondary">
+                        <span class="icon-calendar"></span>
+                        Schedule Session
+                    </button>
+                    <button class="action-btn secondary">
+                        <span class="icon-chart"></span>
+                        View Progress
+                    </button>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate progress circle
+            const progressCircle = document.querySelector('.progress-circle-fill');
+            const circumference = 2 * Math.PI * 24; // radius = 24
+            const progress = 0.8; // 80%
+            
+            progressCircle.style.strokeDasharray = circumference;
+            progressCircle.style.strokeDashoffset = circumference * (1 - progress);
+
+            // Add click handlers to action buttons
+            const actionButtons = document.querySelectorAll('.action-btn');
+            actionButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Add ripple effect
+                    const ripple = document.createElement('span');
+                    const rect = this.getBoundingClientRect();
+                    const size = Math.max(rect.width, rect.height);
+                    const x = event.clientX - rect.left - size / 2;
+                    const y = event.clientY - rect.top - size / 2;
+                    
+                    ripple.style.cssText = `
+                        position: absolute;
+                        width: ${size}px;
+                        height: ${size}px;
+                        left: ${x}px;
+                        top: ${y}px;
+                        background: rgba(255, 255, 255, 0.2);
+                        border-radius: 50%;
+                        transform: scale(0);
+                        animation: ripple 0.6s linear;
+                        pointer-events: none;
+                    `;
+                    
+                    this.style.position = 'relative';
+                    this.style.overflow = 'hidden';
+                    this.appendChild(ripple);
+                    
+                    setTimeout(() => ripple.remove(), 600);
+                });
+            });
+
+            // Animate stat cards on scroll (for mobile)
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -10px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.animation = 'slideInUp 0.6s ease-out';
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.stat-card').forEach(card => {
+                observer.observe(card);
+            });
+
+            // Add hover effects for workout items
+            document.querySelectorAll('.workout-item').forEach(item => {
+                item.addEventListener('mouseenter', function() {
+                    this.style.background = 'rgba(255, 255, 255, 0.02)';
+                    this.style.transform = 'translateX(4px)';
+                });
+
+                item.addEventListener('mouseleave', function() {
+                    this.style.background = 'transparent';
+                    this.style.transform = 'translateX(0)';
+                });
+            });
+
+            // Touch feedback for mobile
+            document.querySelectorAll('.stat-card, .workout-item').forEach(element => {
+                element.addEventListener('touchstart', function() {
+                    this.style.transform = 'scale(0.98)';
+                });
+
+                element.addEventListener('touchend', function() {
+                    this.style.transform = 'scale(1)';
+                });
+            });
+        });
+
+        // Add CSS animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes ripple {
+                to {
+                    transform: scale(4);
+                    opacity: 0;
+                }
+            }
+
+            @keyframes slideInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

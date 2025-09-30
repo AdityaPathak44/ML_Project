@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workout Plans - Fitness Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #1a2332 0%, #2d3748 30%, #1a202c 70%, #2c1810 100%);
+            min-height: 100vh;
+            color: white;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .header p {
+            font-size: clamp(1rem, 2vw, 1.2rem);
+            color: rgba(255, 255, 255, 0.7);
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* Workout Plans Grid */
+        .workout-plans {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 4rem;
+        }
+
+        .workout-card {
+            background: rgba(45, 55, 72, 0.6);
+            border: 1px solid rgba(74, 85, 104, 0.4);
+            border-radius: 16px;
+            padding: 1.5rem;
+            backdrop-filter: blur(15px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .workout-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(74, 85, 104, 0.6);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .workout-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        }
+
+        /* Card Header */
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+        }
+
+        .workout-type {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .type-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        .type-icon.cardio {
+            background: #3182ce;
+        }
+
+        .type-icon.strength {
+            background: #6b46c1;
+        }
+
+        .type-icon.flexibility {
+            background: #0891b2;
+        }
+
+        .participant-count {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .participant-count::before {
+            content: '👥';
+            font-size: 0.75rem;
+        }
+
+        /* Workout Title & Description */
+        .workout-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: white;
+        }
+
+        .workout-description {
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.5;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Workout Details */
+        .workout-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.9rem;
+        }
+
+        .detail-label {
+            color: rgba(255, 255, 255, 0.7);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .detail-value {
+            font-weight: 600;
+        }
+
+        .detail-value.intermediate {
+            color: #f6ad55;
+        }
+
+        .detail-value.beginner {
+            color: #68d391;
+        }
+
+        .detail-value.advanced {
+            color: #fc8181;
+        }
+
+        .detail-value.calories {
+            color: #f6ad55;
+        }
+
+        .detail-value.equipment {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .detail-icon {
+            font-size: 0.75rem;
+        }
+
+        /* Start Workout Button */
+        .start-workout-btn {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            background: linear-gradient(135deg, #ea580c, #f97316);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .start-workout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(234, 88, 12, 0.4);
+        }
+
+        .start-workout-btn::before {
+            content: '▶';
+            font-size: 0.8rem;
+        }
+
+        /* Challenge Section */
+        .challenge-section {
+            text-align: center;
+            background: rgba(45, 55, 72, 0.4);
+            border: 1px solid rgba(74, 85, 104, 0.3);
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            backdrop-filter: blur(15px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .challenge-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 70% 30%, rgba(59, 130, 246, 0.1), transparent 50%);
+            pointer-events: none;
+        }
+
+        .challenge-title {
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .challenge-description {
+            font-size: clamp(0.95rem, 2vw, 1.1rem);
+            color: rgba(255, 255, 255, 0.7);
+            max-width: 600px;
+            margin: 0 auto 2rem;
+            line-height: 1.6;
+            position: relative;
+            z-index: 1;
+        }
+
+        .challenge-cta {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .join-challenge-btn {
+            padding: 1rem 2rem;
+            background: #3b82f6;
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .join-challenge-btn:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+        }
+
+        .participants-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .participants-dot {
+            width: 8px;
+            height: 8px;
+            background: #f6ad55;
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.7;
+                transform: scale(1.2);
+            }
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem 0.5rem;
+            }
+
+            .workout-plans {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .workout-card {
+                padding: 1.25rem;
+            }
+
+            .workout-details {
+                grid-template-columns: 1fr;
+                gap: 0.75rem;
+            }
+
+            .challenge-section {
+                padding: 2rem 1rem;
+            }
+
+            .challenge-cta {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .card-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .participant-count {
+                align-self: flex-end;
+            }
+        }
+
+        /* Loading Animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .workout-card {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .workout-card:nth-child(1) { animation-delay: 0.1s; }
+        .workout-card:nth-child(2) { animation-delay: 0.2s; }
+        .workout-card:nth-child(3) { animation-delay: 0.3s; }
+        .workout-card:nth-child(4) { animation-delay: 0.4s; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>Workout Plans</h1>
+            <p>Choose from our expertly designed workout plans tailored to your fitness level and goals.</p>
+        </header>
+
+        <div class="workout-plans">
+            <!-- HIIT Blast Card -->
+            <div class="workout-card">
+                <div class="card-header">
+                    <div class="workout-type">
+                        <div class="type-icon cardio">⚡</div>
+                        Cardio
+                    </div>
+                    <div class="participant-count">1200</div>
+                </div>
+
+                <h2 class="workout-title">HIIT Blast</h2>
+                <p class="workout-description">High-intensity interval training for maximum calorie burn</p>
+
+                <div class="workout-details">
+                    <div class="detail-item">
+                        <div class="detail-label">
+                            <span class="detail-icon">⏱</span>
+                            30 min
+                        </div>
+                        <div class="detail-value intermediate">Intermediate</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Calories:</div>
+                        <div class="detail-value calories">400-500</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Equipment:</div>
+                        <div class="detail-value equipment">None</div>
+                    </div>
+                </div>
+
+                <button class="start-workout-btn">Start Workout</button>
+            </div>
+
+            <!-- Strength Builder Card -->
+            <div class="workout-card">
+                <div class="card-header">
+                    <div class="workout-type">
+                        <div class="type-icon strength">💪</div>
+                        Strength
+                    </div>
+                    <div class="participant-count">980</div>
+                </div>
+
+                <h2 class="workout-title">Strength Builder</h2>
+                <p class="workout-description">Full-body strength training with progressive overload</p>
+
+                <div class="workout-details">
+                    <div class="detail-item">
+                        <div class="detail-label">
+                            <span class="detail-icon">⏱</span>
+                            45 min
+                        </div>
+                        <div class="detail-value beginner">Beginner</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Calories:</div>
+                        <div class="detail-value calories">300-400</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Equipment:</div>
+                        <div class="detail-value equipment">Weights</div>
+                    </div>
+                </div>
+
+                <button class="start-workout-btn">Start Workout</button>
+            </div>
+
+            <!-- Cardio Core Card -->
+            <div class="workout-card">
+                <div class="card-header">
+                    <div class="workout-type">
+                        <div class="type-icon cardio">💙</div>
+                        Cardio
+                    </div>
+                    <div class="participant-count">756</div>
+                </div>
+
+                <h2 class="workout-title">Cardio Core</h2>
+                <p class="workout-description">Heart-pumping cardio workout combined with core strengthening</p>
+
+                <div class="workout-details">
+                    <div class="detail-item">
+                        <div class="detail-label">
+                            <span class="detail-icon">⏱</span>
+                            35 min
+                        </div>
+                        <div class="detail-value advanced">Advanced</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Calories:</div>
+                        <div class="detail-value calories">450-550</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Equipment:</div>
+                        <div class="detail-value equipment">Mat</div>
+                    </div>
+                </div>
+
+                <button class="start-workout-btn">Start Workout</button>
+            </div>
+
+            <!-- Power Yoga Flow Card -->
+            <div class="workout-card">
+                <div class="card-header">
+                    <div class="workout-type">
+                        <div class="type-icon flexibility">💙</div>
+                        Flexibility
+                    </div>
+                    <div class="participant-count">642</div>
+                </div>
+
+                <h2 class="workout-title">Power Yoga Flow</h2>
+                <p class="workout-description">Dynamic yoga sequences for flexibility and strength</p>
+
+                <div class="workout-details">
+                    <div class="detail-item">
+                        <div class="detail-label">
+                            <span class="detail-icon">⏱</span>
+                            50 min
+                        </div>
+                        <div class="detail-value intermediate">Intermediate</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Calories:</div>
+                        <div class="detail-value calories">250-350</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Equipment:</div>
+                        <div class="detail-value equipment">Mat</div>
+                    </div>
+                </div>
+
+                <button class="start-workout-btn">Start Workout</button>
+            </div>
+        </div>
+
+        <!-- Challenge Section -->
+        <section class="challenge-section">
+            <h2 class="challenge-title">30-Day Transformation Challenge</h2>
+            <p class="challenge-description">Join thousands of users in our most popular fitness program. A comprehensive 30-day journey combining strength, cardio, and flexibility training.</p>
+            
+            <div class="challenge-cta">
+                <button class="join-challenge-btn">Join Challenge</button>
+                <div class="participants-info">
+                    <div class="participants-dot"></div>
+                    8,500+ participants this month
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add click handlers to workout cards
+            const workoutCards = document.querySelectorAll('.workout-card');
+            workoutCards.forEach(card => {
+                card.addEventListener('click', function(e) {
+                    if (!e.target.classList.contains('start-workout-btn')) {
+                        // Add selection effect
+                        this.style.transform = 'scale(0.98)';
+                        setTimeout(() => {
+                            this.style.transform = 'translateY(-5px) scale(1)';
+                        }, 150);
+                    }
+                });
+            });
+
+            // Add click handlers to start workout buttons
+            const startButtons = document.querySelectorAll('.start-workout-btn');
+            startButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    
+                    // Get workout name from the card
+                    const workoutName = this.closest('.workout-card').querySelector('.workout-title').textContent;
+                    
+                    // Add loading state
+                    const originalText = this.textContent;
+                    this.textContent = 'Starting...';
+                    this.disabled = true;
+                    
+                    // Add ripple effect
+                    const ripple = document.createElement('span');
+                    const rect = this.getBoundingClientRect();
+                    const size = Math.max(rect.width, rect.height);
+                    const x = e.clientX - rect.left - size / 2;
+                    const y = e.clientY - rect.top - size / 2;
+                    
+                    ripple.style.cssText = `
+                        position: absolute;
+                        width: ${size}px;
+                        height: ${size}px;
+                        left: ${x}px;
+                        top: ${y}px;
+                        background: rgba(255, 255, 255, 0.3);
+                        border-radius: 50%;
+                        transform: scale(0);
+                        animation: ripple 0.6s linear;
+                        pointer-events: none;
+                    `;
+                    
+                    this.style.position = 'relative';
+                    this.style.overflow = 'hidden';
+                    this.appendChild(ripple);
+                    
+                    // Reset button after animation
+                    setTimeout(() => {
+                        this.textContent = originalText;
+                        this.disabled = false;
+                        ripple.remove();
+                        console.log(`Starting ${workoutName} workout...`);
+                    }, 1500);
+                });
+            });
+
+            // Add click handler to join challenge button
+            const joinButton = document.querySelector('.join-challenge-btn');
+            joinButton.addEventListener('click', function() {
+                const originalText = this.textContent;
+                this.textContent = 'Joining...';
+                this.disabled = true;
+                
+                setTimeout(() => {
+                    this.textContent = 'Welcome to the Challenge!';
+                    this.style.background = '#10b981';
+                    
+                    setTimeout(() => {
+                        this.textContent = originalText;
+                        this.style.background = '#3b82f6';
+                        this.disabled = false;
+                    }, 2000);
+                }, 1000);
+            });
+
+            // Animate participant counts on load
+            const participantCounts = document.querySelectorAll('.participant-count');
+            participantCounts.forEach(count => {
+                const target = parseInt(count.textContent);
+                let current = 0;
+                const increment = target / 100;
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= target) {
+                        current = target;
+                        clearInterval(timer);
+                    }
+                    count.textContent = Math.floor(current).toLocaleString();
+                }, 20);
+            });
+
+            // Add hover effects to workout cards
+            workoutCards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transition = 'all 0.3s ease';
+                });
+
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+
+            // Intersection Observer for scroll animations
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+
+            // Observe challenge section
+            observer.observe(document.querySelector('.challenge-section'));
+        });
+
+        // Add CSS for ripple animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes ripple {
+                to {
+                    transform: scale(4);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
